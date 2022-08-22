@@ -1,6 +1,6 @@
-from curses import KEY_DOWN
 import sys
 import pygame
+
 from settings import Settings
 from samurai import Samurai
 
