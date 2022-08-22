@@ -1,0 +1,14 @@
+In Alien Invation, the player will control a ship that appears at the bottom center of the screen.
+The player can move the ship right and left using the arrow keys, and shoot bullets using the spacebar.
+When the game begins, a fleet of aliens fill the sky and move across and down the screen.
+The player shoots and destroys the aliens.
+If the player shoots all the aliens, a new fleet appears that is faster than the previous fleet.
+If any alien hits the ship or bottom of th escreen, the player looses the a ship. 
+If the player loses three ships, the game ends.
+
+
+Phase 1:
+    Make ship that can move and fire bullets.
+
+Phase 2: 
+    Create aliens and refine gameplay
