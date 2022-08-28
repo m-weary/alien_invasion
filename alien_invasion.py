@@ -1,9 +1,11 @@
+from os import name
 import sys
 import pygame
 
 from settings import Settings
 from samurai import Samurai
 from bullet import Bullet
+from enemy import Enemy
 
 class AlienInvasion:
     """A general class to manage game assets and behaviour"""
@@ -18,6 +20,8 @@ class AlienInvasion:
         pygame.display.set_caption("Alien Invasion")
         self.samurai = Samurai(self)
         self.bullets = pygame.sprite.Group()
+        self.enemy = pygame.sprite.Group()
+        self._create_fleet()
     
     def run_game(self):
         """Begin the main loop"""
@@ -25,8 +29,9 @@ class AlienInvasion:
             #Watch for keyboard and mouse events
             self._check_events()
             self.samurai.update()
-            self.bullets.update()
+            self._update_bullets()
             self._update_screen()
+            
                     
     def _check_events(self):
         """Respond to keypress and mouse events"""
@@ -60,8 +65,43 @@ class AlienInvasion:
 
     def _fire_bullet(self):
         """Create a new bullet and add it to the bullets group"""
-        new_bullet = Bullet(self)
-        self.bullets.add(new_bullet)
+        if len(self.bullets) < self.settings.bullets_allowed:
+            new_bullet = Bullet(self)
+            self.bullets.add(new_bullet)
+
+    def _update_bullets(self):
+        """Update position of bullets and get rid of old bullets"""
+        self.bullets.update()
+        #Get rid of bullets once they are out of screen
+        for bullet in self.bullets.copy():
+            if bullet.rect.bottom <= 0:
+                self.bullets.remove(bullet)
+
+    def _create_fleet(self):
+        """Create the fleet of enemies"""
+        #Make an enemy
+        enemy = Enemy(self)
+        #Calculate how many can fit on the screen
+        enemy_width, enemy_height = enemy.rect.size
+        available_space_x = self.settings.screen_width - (2 * enemy_width)
+        number_enemies_x = available_space_x // (2 * enemy_width)
+        #Determine the number of rows of enemies that fit on the screen
+        samurai_height = self.samurai.rect.height
+        available_space_y = (self.settings.screen_height - (2 * enemy_height) - samurai_height)
+        number_rows = available_space_y // (2 * enemy_height)
+        #Create full fleet
+        for row_number in range(number_rows):
+            for enemy_number in range(number_enemies_x):
+                self._create_enemy(enemy_number, row_number)
+
+    def _create_enemy(self, enemy_number, row_number):
+        #Create an enemy and place it in the row
+        enemy = Enemy(self)
+        enemy_width, enemy_height = enemy.rect.size
+        enemy.x = enemy_width + 2 * enemy_width * enemy_number
+        enemy.rect.x = enemy.x
+        enemy.rect.y = enemy.rect.height + 2 * enemy.rect.height * row_number
+        self.enemy.add(enemy)
 
     def _update_screen(self):
         """Update images on the screen, and flip to the new screen"""
@@ -71,6 +111,8 @@ class AlienInvasion:
         #Add the bullets
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
+        #Add the enemy
+        self.enemy.draw(self.screen)
         #Make the most recently drawn screen visible
         pygame.display.flip()
 

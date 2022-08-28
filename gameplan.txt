@@ -11,4 +11,10 @@ Phase 1:
     Make ship that can move and fire bullets.
 
 Phase 2: 
-    Create aliens and refine gameplay
+    Create aliens and refine gameplay:
+        Add an alien to the top left corner - make sure spacing is appropriate
+        Use the spacing to determine how many aliens can fit
+        Move fleet down until alien hits samurai or alien reaches the ground
+        if this occurs, kill the samurai and create new fleet
+        repeat this process for as many lives as you set in settings
+        
